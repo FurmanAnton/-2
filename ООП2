@@ -5,23 +5,13 @@ private:
 
 public:
     // Конструктор за замовчуванням
-    Vector() {
-        arr = nullptr;
-        size = 0;
-    }
+    Vector() : arr(nullptr), size(0) {}
 
-    // Конструктор з вказаним розміром
-    Vector(int size) {
-        arr = new double[size];
-        this->size = size;
-    }
-
-    // Конструктор копіювання
-    Vector(const Vector& other) {
-        size = other.size;
+    // Конструктор з параметрами
+    Vector(int size) : size(size) {
         arr = new double[size];
         for (int i = 0; i < size; i++) {
-            arr[i] = other.arr[i];
+            arr[i] = 0.0;
         }
     }
 
@@ -30,36 +20,19 @@ public:
         delete[] arr;
     }
 
-    // Оператор присвоєння
-    Vector& operator=(const Vector& other) {
-        if (this == &other) {
-            return *this;
-        }
-
-        delete[] arr;
-
-        size = other.size;
-        arr = new double[size];
-        for (int i = 0; i < size; i++) {
-            arr[i] = other.arr[i];
-        }
-
-        return *this;
-    }
-
     // Оператор приведення до типу int - повертає розмір вектора
     operator int() const {
         return size;
     }
 
-    // Оператор встановлення нового розміру вектора
+    // Оператор встановлення нового розміру вектора (метод класу)
     void operator()(int newSize) {
         if (newSize < 0) {
             newSize = 0;
         }
 
         double* newArr = new double[newSize];
-        int copySize = newSize < size ? newSize : size; // Вибираємо менший розмір для копіювання
+        int copySize = newSize < size ? newSize : size;
         for (int i = 0; i < copySize; i++) {
             newArr[i] = arr[i];
         }
@@ -69,20 +42,28 @@ public:
         size = newSize;
     }
 
-    // Оператор віднімання числа від вектора
-    Vector operator-(double num) const {
-        Vector result(*this);
+    // Оператор віднімання числа від вектора (метод класу)
+    void operator-(double num) {
         for (int i = 0; i < size; i++) {
-            result.arr[i] -= num;
+            arr[i] -= num;
         }
-        return result;
     }
 
-    // Оператор доступу за індексом
+    // Оператор доступу за індексом (метод класу)
     double& operator[](int index) {
         if (index < 0 || index >= size) {
             throw std::out_of_range("Index out of range");
         }
         return arr[index];
+    }
+
+    // Дружня функція для виводу вектора
+    friend std::ostream& operator<<(std::ostream& os, const Vector& vec) {
+        os << "[ ";
+        for (int i = 0; i < vec.size; i++) {
+            os << vec.arr[i] << " ";
+        }
+        os << "]";
+        return os;
     }
 };
