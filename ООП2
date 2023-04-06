@@ -1,0 +1,88 @@
+class Vector {
+private:
+    double* arr; // Вказівник на масив дійсних чисел
+    int size; // Розмір вектора
+
+public:
+    // Конструктор за замовчуванням
+    Vector() {
+        arr = nullptr;
+        size = 0;
+    }
+
+    // Конструктор з вказаним розміром
+    Vector(int size) {
+        arr = new double[size];
+        this->size = size;
+    }
+
+    // Конструктор копіювання
+    Vector(const Vector& other) {
+        size = other.size;
+        arr = new double[size];
+        for (int i = 0; i < size; i++) {
+            arr[i] = other.arr[i];
+        }
+    }
+
+    // Деструктор
+    ~Vector() {
+        delete[] arr;
+    }
+
+    // Оператор присвоєння
+    Vector& operator=(const Vector& other) {
+        if (this == &other) {
+            return *this;
+        }
+
+        delete[] arr;
+
+        size = other.size;
+        arr = new double[size];
+        for (int i = 0; i < size; i++) {
+            arr[i] = other.arr[i];
+        }
+
+        return *this;
+    }
+
+    // Оператор приведення до типу int - повертає розмір вектора
+    operator int() const {
+        return size;
+    }
+
+    // Оператор встановлення нового розміру вектора
+    void operator()(int newSize) {
+        if (newSize < 0) {
+            newSize = 0;
+        }
+
+        double* newArr = new double[newSize];
+        int copySize = newSize < size ? newSize : size; // Вибираємо менший розмір для копіювання
+        for (int i = 0; i < copySize; i++) {
+            newArr[i] = arr[i];
+        }
+
+        delete[] arr;
+        arr = newArr;
+        size = newSize;
+    }
+
+    // Оператор віднімання числа від вектора
+    Vector operator-(double num) const {
+        Vector result(*this);
+        for (int i = 0; i < size; i++) {
+            result.arr[i] -= num;
+        }
+        return result;
+    }
+
+    // Оператор доступу за індексом
+    double& operator[](int index) {
+        if (index < 0 || index >= size) {
+            throw std::out_of_range("Index out of range");
+        }
+        return arr[index];
+    }
+};
